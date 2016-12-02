@@ -1,11 +1,14 @@
 var program = require("commander");
 
+function list (string) {
+    return string.split(",")
+}
 program
     .version("0.0.1")
     .option("-s, --output-size [number]", "number of terms generated from language model", 5)
-    .option("-i, --input [path]", "path of training data")
+    .option("-i, --input <path>", "path of training data",list)
     .option("-o, --output-dest [path]", "location to send output, defaults to stdout")
-    .option("-n, --context-size [number]","the 'n' in n-gram. How deep does the model go?",2)
+    .option("-n, --context-size [number]", "the 'n' in n-gram. How deep does the model go?", 2)
     .parse(process.argv);
 
 global.curry = require("./lib/functional/partialApplication.js").curry
@@ -19,13 +22,25 @@ const {
     chainPromise
 } = require("./lib/promise")
 
-var {input,outputSize,outputDest,contextSize} = program;
+var {
+    input,
+    outputSize,
+    outputDest,
+    contextSize
+} = program;
+
 outputSize = parseInt(outputSize);
 contextSize = parseInt(contextSize);
 
-console.log("running program with inputs",{input,outputSize,outputDest,contextSize})
+console.log("running program with inputs", {
+    input,
+    outputSize,
+    outputDest,
+    contextSize
+});
+
 chainPromise(null, [
-        () => testModel.buildFromPath(input),
+        () => testModel.buildFromMany(...input),
         () => testModel.randomWalk(outputSize),
         (output) => {
             if (outputDest)
