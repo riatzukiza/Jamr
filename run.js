@@ -1,14 +1,16 @@
 var program = require("commander");
 
-function list (string) {
+function list(string) {
     return string.split(",")
 }
 program
     .version("0.0.1")
     .option("-s, --output-size [number]", "number of terms generated from language model", 5)
-    .option("-i, --input <path>", "path of training data",list)
+    .option("-i, --input <path>", "path of training data", list)
     .option("-o, --output-dest [path]", "location to send output, defaults to stdout")
     .option("-n, --context-size [number]", "the 'n' in n-gram. How deep does the model go?", 2)
+    .option("-l, --load [path]", "load an existing model")
+    .option("-w, --save [path]", "save the resulting model")
     .parse(process.argv);
 
 global.curry = require("./lib/functional/partialApplication.js").curry
@@ -41,16 +43,26 @@ console.log("running program with inputs", {
 });
 var colors = require('colors');
 chainPromise(null, [
-        () => testModel.buildFromMany(input),
+        () => {
+            if(program.load) {
+                testModel.load(program.load);
+            }
+            if(program.input)
+                return testModel.buildFromMany(input);
+        },
         () => testModel.randomWalk(outputSize),
         (output) => {
+            let parsed = output.replace(/<s>/g, "\n").replace(/<\/s>/g,".")
             if (outputDest)
-                fs.writeFile(outputDest, output, (err) => {
+                fs.writeFile(outputDest, parsed , (err) => {
                     if (err) {
                         throw err;
                     }
+                    if(program.save) {
+                        return testModel.save(program.save);
+                    }
                 });
-            else console.log(output);
+            else console.log(parsed);
         }
     ])
     .catch((function(err) {

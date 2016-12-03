@@ -15,3 +15,20 @@ the script can also take multi file inputs, for example
 ```sh
 node ./run.js -i ./big-input.txt,./bible.txt -o ./big-output.txt -n 5 -s 100
 ```
+
+Now you can save and load language models!
+
+here is how you load models:
+
+here is how you save them:
+```
+node run.js -w ./model.json -i ./text-file.txt -o ./where-ever.txt -n 5 -s 5000
+```
+
+
+```
+node run.js -l ./model.json -s 5000 -n 4
+```
+
+
+there is already an example model name called "./model.json", which is a quad gram from godel.txt
