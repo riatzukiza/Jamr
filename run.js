@@ -12,6 +12,7 @@ program
     .parse(process.argv);
 
 global.curry = require("./lib/functional/partialApplication.js").curry
+require("./lib/natives/object.js")
 
 var NGramModel = require("./lib/probability/n-gram-model");
 var testModel = (new NGramModel(null, program.contextSize));
@@ -38,9 +39,9 @@ console.log("running program with inputs", {
     outputDest,
     contextSize
 });
-
+var colors = require('colors');
 chainPromise(null, [
-        () => testModel.buildFromMany(...input),
+        () => testModel.buildFromMany(input),
         () => testModel.randomWalk(outputSize),
         (output) => {
             if (outputDest)
