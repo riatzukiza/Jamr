@@ -41,7 +41,6 @@ console.log("running program with inputs", {
     outputDest,
     contextSize
 });
-var colors = require('colors');
 chainPromise(null, [
         () => {
             if(program.load) {
