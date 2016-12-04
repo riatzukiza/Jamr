@@ -5,5 +5,9 @@
     "dependencies": {
         "bluebird": "^3.3.5",
         "commander": "*"
+    },
+
+    "bin": {
+        "jamr": "./bin/jamr"
     }
 }
